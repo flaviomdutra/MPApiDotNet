@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+
+  postgresql:
+    hostname: postgresql
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+      - ./postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c pg_isready"]
+      interval: 5s
+      timeout: 3s
+      retries: 6
+
+volumes:
+  postgresql_data:
