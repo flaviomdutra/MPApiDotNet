@@ -18,7 +18,7 @@ namespace MP.ApiDotNet.Infra.IoC
             services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IPersonRepository, PersonRepository>();
-
+            services.AddScoped<IProductRepository, ProductRepository>();
             return services;
         }
 
@@ -26,6 +26,7 @@ namespace MP.ApiDotNet.Infra.IoC
         {
             services.AddAutoMapper(typeof(DomainToDtoMapping));
             services.AddScoped<IPersonService, PersonService>();
+            services.AddScoped<IProductService, ProductService>();
             return services;
         }
     }

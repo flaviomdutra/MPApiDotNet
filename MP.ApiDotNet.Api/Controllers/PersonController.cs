@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using MP.ApiDotNet.Application.DTOs;
 using MP.ApiDotNet.Application.Services.Interfaces;
 
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace MP.ApiDotNet.Api.Controllers
 {
     [Route("api/[controller]")]
@@ -51,6 +49,29 @@ namespace MP.ApiDotNet.Api.Controllers
                 return Ok(result);
 
             return BadRequest(result);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> UpdateAsync([FromBody] PersonDTO personDto)
+        {
+            var result = await _personService.UpdateAsync(personDto);
+            if (result.IsSuccess)
+                return Ok(result);
+
+            return BadRequest(result);
+
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<ActionResult> DeleteAsync(int id)
+        {
+            var result = await _personService.DeleteAsync(id);
+            if (result.IsSuccess)
+                return Ok(result);
+
+            return BadRequest(result);
+
         }
     }
 }

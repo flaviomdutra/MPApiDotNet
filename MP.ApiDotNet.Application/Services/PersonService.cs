@@ -34,6 +34,16 @@ namespace MP.ApiDotNet.Application.Services
 
         }
 
+        public async Task<ResultService> DeleteAsync(int id)
+        {
+            var person = await _personRepository.GetByIdAsync(id);
+            if (person == null)
+                return ResultService.Fail("Pessoa não encontrada");
+
+            await _personRepository.DeleteAsync(person);
+            return ResultService.Ok($"Pessoa do id:{id} foi deletada");
+        }
+
         public async Task<ResultService<ICollection<PersonDTO>>> GetAsync()
         {
             var people = await _personRepository.GetPeopleAsync();
@@ -47,6 +57,28 @@ namespace MP.ApiDotNet.Application.Services
                 return ResultService.Fail<PersonDTO>("Pessoa não encontrada!");
 
             return ResultService.Ok(_mapper.Map<PersonDTO>(person));
+        }
+
+        public async Task<ResultService> UpdateAsync(PersonDTO personDTO)
+        {
+            if(personDTO == null)
+                return ResultService.Fail("Objeto deve ser informado");
+
+            var validation = new PersonDTOValidator().Validate(personDTO);
+
+            if (!validation.IsValid)
+                return ResultService.RequestError("Problemas com a validação dos campos", validation);
+
+            var person = await _personRepository.GetByIdAsync(personDTO.Id);
+
+            if (person == null)
+                return ResultService.Fail("Pessoa não encontrada");
+
+            person = _mapper.Map<PersonDTO, Person>(personDTO, person);
+            await _personRepository.EditAsync(person);
+
+            return ResultService.Ok("Pessoa editada");
+
         }
     }
 }
